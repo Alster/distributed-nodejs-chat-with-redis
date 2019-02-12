@@ -1,0 +1,64 @@
+version: '3.3'
+
+services:
+  msg-bus-0:
+    image: "redis:5.0-alpine"
+    # ports:
+    #   - 6379:6379
+    networks:
+      - esnet
+
+  msg-bus-1:
+    image: "redis:5.0-alpine"
+    # ports:
+    #   - 6379:6379
+    networks:
+      - esnet
+
+  dialogs-cache:
+    image: "redis:5.0-alpine"
+    # ports:
+    #   - 6379:6379
+    networks:
+      - esnet
+
+  sock-app-0:
+    image: "sock-app:latest"
+    ports:
+      - 3001:3000
+    networks:
+      - esnet
+    volumes:
+      - ./sock-app:/usr/src/app
+    depends_on:
+      - dialogs-cache
+      - msg-bus-0
+      - msg-bus-1
+
+  sock-app-1:
+    image: "sock-app:latest"
+    ports:
+      - 3002:3000
+    networks:
+      - esnet
+    volumes:
+      - ./sock-app:/usr/src/app
+    depends_on:
+      - dialogs-cache
+      - msg-bus-0
+      - msg-bus-1
+
+  # sock-nginx:
+  #   image: "sock-nginx:latest"
+  #   ports:
+  #     - 3333:3333
+  #   depends_on:
+  #     - sock-app-0
+  #     - sock-app-1
+  #   networks:
+  #     - esnet
+  #   volumes:
+  #     - ./sock-nginx:/etc/nginx
+
+networks:
+  esnet:

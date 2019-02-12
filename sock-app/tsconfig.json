@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "rootDirs": [
+        "./src",
+      ],
+      "experimentalDecorators": true,
+      "strictNullChecks": true,
+      "noImplicitThis": true,
+      "noImplicitReturns": true,
+      "strictFunctionTypes": true,
+      "strictPropertyInitialization": true,
+
+      "outDir": "./build",
+      "sourceMap": true,
+      "typeRoots": [
+        "node_modules/@types"
+      ],
+      "target": "ES2017",
+    },
+  }
