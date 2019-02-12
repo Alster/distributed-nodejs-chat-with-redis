@@ -343,14 +343,16 @@ io.on('connection', sock=>{
     sock.on('createChat', async data=> {
         dc.add(data.dialog, UID)
         bus.publish(toUserChan(UID), {
-            method: 'memberAdded', data: UID
+            method: 'memberAdded', data: {
+                dialog: data.dialog,
+                member: UID
+            }
         })
     })
 
     sock.on('write', async data=> {
         const members = await dc.getFor(UID, data.dialog)
         members.forEach(u=> {
-            console.log(u)
             bus.publish(toUserChan(u), {
                 method: 'write', data: data
             })
@@ -394,4 +396,8 @@ io.on('connection', sock=>{
         console.log(`Disconnecting ${err}`)
         await cleanup()
     })
+})
+
+process.on('unhandledRejection', (err)=> {
+    console.error(clc.red(`ERR: ${err.message}`))
 })

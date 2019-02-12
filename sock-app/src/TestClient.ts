@@ -1,3 +1,4 @@
+const clc = require('cli-color')
 import * as IOClient from 'socket.io-client'
 
 const connStr = `http://localhost:${process.argv[2] || '3333'}`
@@ -7,19 +8,19 @@ const sock = IOClient(connStr, {
 })
 
 sock.on('connect', (err)=> {
-    console.log(`Connected`)
+    console.log(clc.blue('Connected'))
 
     sock.on('write', data=> 
-        console.log(`write ${JSON.stringify(data)}`))
+        console.log(`${clc.green('MSG')} from ${data.dialog}: ${data.msg}`))
 
     sock.on('memberAdded', data=> 
-        console.log(`memberAdded ${JSON.stringify(data)}`))
+        console.log(`Member ${data.member} ${clc.green('added')} to ${data.dialog}`))
     
     sock.on('memberRemoved', data=> 
-        console.log(`memberRemoved ${JSON.stringify(data)}`))
+    console.log(`Member ${data.member} ${clc.red('removed')} from ${data.dialog}`))
 
     sock.on('statusChange', data=> 
-        console.log(`statusChange ${JSON.stringify(data)}`))
+    console.log(`User ${data.user} goes ${data.online ? clc.yellow("online") : clc.red("offline")}`))
 
     const Repl = require('repl')
     const repl = Repl.start({
@@ -31,7 +32,7 @@ sock.on('connect', (err)=> {
 
     repl.context.a = (ruid)=> {
         sock.emit('auth', ruid.toString(), uid=> {
-            console.log(`Authorized as ${uid}`)
+            console.log(`${clc.green('Authorized')} as ${uid}`)
         })
     }
 
@@ -44,7 +45,7 @@ sock.on('connect', (err)=> {
     }
 
     repl.context.o = (users)=> {
-        sock.emit('whoIsOnline', users, (res)=> console.log(`Online users: ${JSON.stringify(res)}`))
+        sock.emit('whoIsOnline', users, (res)=> console.log(`${clc.blue('Online users')}: ${res.join(', ')}`))
     }
 
     repl.context.w = (dialog, msg)=> {
