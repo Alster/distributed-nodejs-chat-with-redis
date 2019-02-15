@@ -1,0 +1,54 @@
+@startuml
+skinparam shadowing false
+skinparam default{
+  FontName Roboto
+}
+skinparam sequence {
+	ArrowColor #58a2e0
+	ActorBorderColor Black
+	LifeLineBorderColor blue
+	LifeLineBackgroundColor #89c5c8
+
+	ParticipantBorderColor #58a2e0
+	ParticipantBackgroundColor White
+
+	ActorBackgroundColor #89c5c8
+}
+skinparam activity {
+    StartColor #89c5c8
+    EndColor #89c5c8
+    BackgroundColor white
+    BorderColor #58a2e0
+    FontSize 14
+    Arrow {
+        Color #89c5c8
+    }
+}
+skinparam note {
+    BackgroundColor #58a2e0
+    BorderColor white
+    FontColor white
+}
+
+
+skinparam package {
+    BorderColor #89c5c8
+    FontColor #58a2e0
+}
+skinparam collections {
+    BorderColor #89c5c8
+    FontColor #58a2e0
+    BackgroundColor #58a2e0
+}
+skinparam interface {
+  backgroundColor white
+  borderColor #89c5c8
+}
+skinparam component {
+  FontSize 13
+  BackgroundColor<<Apache>> white
+  BorderColor<<Apache>> #89c5c8
+  BorderColor black
+  BackgroundColor white
+}
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+!include ./article/includes/style.iuml
+
+hide footbox
+actor UserA
+participant Node1
+collections Master
+collections Redis
+participant Node2
+actor UserB
+
+UserA -> Node1: Шлет сообщение UserB
+Node1 -> Master: Опрашивание мастера
+Master -> Node1: Ответ
+Node1 -> Redis: Пересылка нужному редису
+Redis -> Node2: Пересылка нужной ноде
+Node2 -> UserB: Отправка конечному пользователю
+
+
+@enduml
