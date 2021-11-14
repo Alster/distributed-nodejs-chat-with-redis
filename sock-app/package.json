@@ -12,8 +12,7 @@
     "cli-color": "^1.4.0",
     "notepack.io": "^2.2.0",
     "redis": "^2.8.0",
-    "socket.io": "^2.2.0",
-    "xxhash": "^0.2.4"
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "^10.12.19",

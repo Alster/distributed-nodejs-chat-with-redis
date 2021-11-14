@@ -10,16 +10,16 @@ const sock = IOClient(connStr, {
 sock.on('connect', (err)=> {
     console.log(clc.blue('Connected'))
 
-    sock.on('write', data=> 
+    sock.on('write', data=>
         console.log(`${clc.green('MSG')} from ${data.dialog}: ${data.msg}`))
 
-    sock.on('memberAdded', data=> 
+    sock.on('memberAdded', data=>
         console.log(`Member ${data.member} ${clc.green('added')} to ${data.dialog}`))
-    
-    sock.on('memberRemoved', data=> 
+
+    sock.on('memberRemoved', data=>
     console.log(`Member ${data.member} ${clc.red('removed')} from ${data.dialog}`))
 
-    sock.on('statusChange', data=> 
+    sock.on('statusChange', data=>
     console.log(`User ${data.user} goes ${data.online ? clc.yellow("online") : clc.red("offline")}`))
 
     const Repl = require('repl')
@@ -66,7 +66,7 @@ sock.on('connect', (err)=> {
             member: member.toString()
         })
     }
-    
+
     repl.context.rm = (dialog, member)=> {
         sock.emit('removeMember', {
             dialog: dialog.toString(),
