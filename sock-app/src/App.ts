@@ -2,7 +2,11 @@ const clc = require('cli-color')
 import * as msgpack from 'notepack.io'
 
 //region shard indexing
-import * as xxhash from 'xxhash'
+// const xxhash = require('xxhash')
+// import * as xxhash from 'xxhash'
+const { createHash } = require('crypto');
+import { Buffer } from 'buffer';
+import * as SocketIO from 'socket.io'
 
 /**
  * Интерфейс отвечающий за разбивку редисов по хешу,
@@ -23,13 +27,21 @@ class HashPartitoning{
 
     //Получить индекс клиента по ключу
     indexOf(key:string|number):number{
+
         if (typeof key == 'number') key = key.toString()
-        return Math.floor(
-            xxhash.hash64(
-                Buffer.from(key, 'utf8'), 0x2B0352DF, 'buffer'
-            ).readUInt32BE()
-            % this.servers.length
-        )
+
+        const hash = createHash('sha256').update(key).digest('hex');
+
+        const buffer = Buffer.from(hash);
+
+        return buffer.readUInt32BE(0) % this.servers.length;
+
+        // return Math.floor(
+        //     xxhash.hash64(
+        //         Buffer.from(key, 'utf8'), 0x2B0352DF, 'buffer'
+        //     ).readUInt32BE()
+        //     % this.servers.length
+        // )
     }
 
     //Получить клиент по индексу
@@ -178,13 +190,16 @@ class MessagesBus{
     }
 }
 
-const bus = new MessagesBus([{
-    host: 'msg-bus-0',
-    port: 6379
-}, {
-    host: 'msg-bus-1',
-    port: 6379
-}])
+const bus = new MessagesBus([
+    {
+        host: 'msg-bus-0',
+        port: 6379
+    },
+    // {
+    //     host: 'msg-bus-1',
+    //     port: 6379
+    // }
+])
 
 //endregion
 
@@ -250,7 +265,7 @@ interface Message{
     data: string
 }
 
-import * as SocketIO from 'socket.io'
+
 const io = SocketIO(3000, {
     // transports: ['websocket']
 })
@@ -388,7 +403,7 @@ io.on('connection', sock=>{
      * Метод очистки от подписок, должен обязательно сррабатывать при отключении пользователя
      */
     async function cleanup():Promise<void>{
-        statSubs.forEach(s=> bus.leave(s, receiveStatus))
+        statSubs.forEach(s => bus.leave(s + '', receiveStatus))
         await logout()        
     }
 
@@ -398,6 +413,6 @@ io.on('connection', sock=>{
     })
 })
 
-process.on('unhandledRejection', (err)=> {
+process.on('unhandledRejection', (err: {message})=> {
     console.error(clc.red(`ERR: ${err.message}`))
 })

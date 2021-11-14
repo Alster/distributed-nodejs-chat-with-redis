@@ -1,7 +1,7 @@
 const clc = require('cli-color')
 import * as IOClient from 'socket.io-client'
 
-const connStr = `http://localhost:${process.argv[2] || '3333'}`
+const connStr = `http://localhost:${process.argv[2] || '3001'}`
 console.log(`Connecting to ${connStr}`)
 const sock = IOClient(connStr, {
     transports: ['websocket']
