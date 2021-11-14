@@ -17,13 +17,13 @@ docker-compose -f "docker-compose.yml" up -d --build
 Серверы доступны на портах **3001** и **3002**, их логи можно посмотреть:
 
 ```bash
-docker logs distributed-nodejs-chat-with-redis_sock-app-0_1 --tail 50 -f
+docker-compose logs -f --tail 50 sock-app-0
 ```
 
 ..и:
 
 ```bash
-docker logs distributed-nodejs-chat-with-redis_sock-app-1_1 --tail 50 -f
+docker-compose logs -f --tail 50 sock-app-1
 ```
 
 Чтобы поднять клиента заходим в папку `sock-app` и выполняем:
@@ -44,8 +44,8 @@ ts-node src/TestClient.ts %PORT%
 | Узнать кто из списка пользователей онлайн | o([`user_name`]) | **O**nline |
 | Написать сообщение в комнату | w(`room`, `message`) | **W**rite |
 | Создать комнату | cc(`room`) | **C**reate **C**hat |
-| Добавить участника с комнаты | am(`room`, `member`) | **A**dd **M**ember |
-| Удалить участника в комнату | rm(`room`, `member`) | **R**emove **M**ember |
+| Добавить участника в комнату | am(`room`, `member`) | **A**dd **M**ember |
+| Удалить участника из комнаты | rm(`room`, `member`) | **R**emove **M**ember |
 
 ## Скринкасты
 
