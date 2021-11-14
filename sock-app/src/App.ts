@@ -2,8 +2,6 @@ const clc = require('cli-color')
 import * as msgpack from 'notepack.io'
 
 //region shard indexing
-// const xxhash = require('xxhash')
-// import * as xxhash from 'xxhash'
 const { createHash } = require('crypto');
 import { Buffer } from 'buffer';
 import * as SocketIO from 'socket.io'
@@ -31,17 +29,8 @@ class HashPartitoning{
         if (typeof key == 'number') key = key.toString()
 
         const hash = createHash('sha256').update(key).digest('hex');
-
         const buffer = Buffer.from(hash);
-
         return buffer.readUInt32BE(0) % this.servers.length;
-
-        // return Math.floor(
-        //     xxhash.hash64(
-        //         Buffer.from(key, 'utf8'), 0x2B0352DF, 'buffer'
-        //     ).readUInt32BE()
-        //     % this.servers.length
-        // )
     }
 
     //Получить клиент по индексу
@@ -105,7 +94,7 @@ class MessagesBus{
     /**
      * Подписка на канал
      * Можно сколько угодно подписываться на один и тот же канал,
-     * но реальная подписка в клиенте редиса на указанный канал 
+     * но реальная подписка в клиенте редиса на указанный канал
      * производится только один раз, если до этого не было локальных подписчиков
      */
     join(channel:string, cb:EventCallback):void{
@@ -129,7 +118,7 @@ class MessagesBus{
     /**
      * Отписка от канала
      * Можно сколько угодно отписываться от одного и того же канала,
-     * но реальная отписка в клиенте редиса на указанный канал 
+     * но реальная отписка в клиенте редиса на указанный канал
      * производится только один раз, если уже действительно нет локальных подписчиков
      */
     leave(channel:string, cb:EventCallback):void{
@@ -139,7 +128,7 @@ class MessagesBus{
         const c = e[channel]
         const cb_index = c.indexOf(cb)
         if (!~cb_index) throw new Error(`Callback for "${channel}" does not exists`)
-        
+
         //Удаляем подписку локально
         c.splice(cb_index, 1)
         console.log(`${clc.bold(clc.yellow("LEAVE"+i))} ${clc.yellow(channel)}`)
@@ -195,10 +184,10 @@ const bus = new MessagesBus([
         host: 'msg-bus-0',
         port: 6379
     },
-    // {
-    //     host: 'msg-bus-1',
-    //     port: 6379
-    // }
+    {
+        host: 'msg-bus-1',
+        port: 6379
+    }
 ])
 
 //endregion
@@ -209,7 +198,7 @@ const bus = new MessagesBus([
  * Интерфейс отвечающий за работу с комнатами (диалогами)
  */
 class DialogsConrtoller{
-    
+
     private readonly dcache:HashPartitoning;
 
     constructor(){
@@ -231,7 +220,7 @@ class DialogsConrtoller{
 
     /**
      * Тоже получение диалога по идентификатору, но с проврекой
-     * является ли указанный пользователь его участником 
+     * является ли указанный пользователь его участником
      */
     async getFor(uid:string, did:string):Promise<string[]>{
         if (!uid) throw new Error(`No uid passed`)
@@ -312,8 +301,8 @@ io.on('connection', sock=>{
     })
 
     /**
-     * Отписка от канала пользователя, 
-     * уведомление об уходе оффлайн 
+     * Отписка от канала пользователя,
+     * уведомление об уходе оффлайн
      * если этот человек больше нигде не залогинен
      */
     async function logout(){
@@ -404,7 +393,7 @@ io.on('connection', sock=>{
      */
     async function cleanup():Promise<void>{
         statSubs.forEach(s => bus.leave(s + '', receiveStatus))
-        await logout()        
+        await logout()
     }
 
     sock.on('disconnect', async (err)=> {

@@ -29,7 +29,7 @@ services:
     depends_on:
       - dialogs-cache
       - msg-bus-0
-     - msg-bus-1
+      - msg-bus-1
 
  sock-app-1:
    build:
